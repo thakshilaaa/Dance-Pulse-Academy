@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | Pulse Dance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #7A4B9C;
+            --primary-light: #B58DCD;
+            --primary-pastel: #E8D5F5;
+            --primary-bg: #F8F0FC;
+            --white: #FFFFFF;
+            --gold: #D4AF37;
+            --text-dark: #2D1B3D;
+            --text-muted: #6B5B7A;
+            --shadow: 0 8px 30px rgba(74, 44, 104, 0.12);
+            --radius: 16px;
+            --transition: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 440px;
+            width: 100%;
+        }
+
+        .register-container .logo {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .register-container .logo i {
+            color: var(--gold);
+        }
+
+        .register-container h2 {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 1.6rem;
+        }
+
+        .register-container .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--primary-pastel);
+            border-radius: 40px;
+            font-size: 1rem;
+            background: var(--primary-bg);
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+        }
+
+        .form-group small {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-register:hover {
+            background: var(--primary-light);
+        }
+
+        .register-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .register-footer a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .register-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo"><i class="fas fa-music"></i> Pulse</div>
+        <h2>Create Account</h2>
+        <p class="subtitle">Join the Pulse community</p>
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="regFullname" placeholder="e.g. Saman Perera" required />
+            </div>
+            <div class="form-group">
+                <label>Username (Unique)</label>
+                <input type="text" id="regUsername" placeholder="Choose a unique username" required />
+                <small>US-001 &amp; US-008: Must be unique</small>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="regEmail" placeholder="you@example.com" required />
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="text" id="regPhone" placeholder="+94 77 123 4567" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="regPassword" placeholder="Create a strong password" required />
+            </div>
+            <button type="submit" class="btn-register"><i class="fas fa-user-plus"></i> Register</button>
+        </form>
+        <p class="register-footer">Already have an account? <a href="login.html">Login</a></p>
+    </div>
+
+    <script>
+        // ================================================================
+        // REGISTER HANDLER – Saves user to localStorage
+        // ================================================================
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const fullname = document.getElementById('regFullname').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+
+            if (!fullname || !username || !email || !password) {
+                alert('❌ Please fill in all required fields.');
+                return;
+            }
+
+            // Get existing users from localStorage
+            let users = JSON.parse(localStorage.getItem('pulseUsers')) || [];
+
+            // Check for duplicate username (US-008)
+            if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                alert('❌ Username already taken. Please choose another one (US-008).');
+                return;
+            }
+
+            // Check for duplicate email
+            if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+                alert('❌ Email already registered. Please use another email.');
+                return;
+            }
+
+            // Create new user object
+            const newUser = {
+                id: users.length + 1,
+                fullname: fullname,
+                username: username,
+                email: email,
+                phone: phone || '+94 77 123 4567',
+                password: password, // In production, hash this!
+                role: 'Student',
+                registeredAt: new Date().toISOString(),
+                // Default stats
+                totalBooked: 0,
+                upcomingClasses: 0,
+                totalSpent: 0,
+                bookings: []
+            };
+
+            // Save to localStorage
+            users.push(newUser);
+            localStorage.setItem('pulseUsers', JSON.stringify(users));
+
+            // Log the user in automatically
+            sessionStorage.setItem('pulseUser', username);
+            if (!sessionStorage.getItem('pulseCart')) {
+                sessionStorage.setItem('pulseCart', JSON.stringify([]));
+            }
+
+            alert('✅ Registration successful! Welcome ' + fullname + '!');
+            window.location.href = 'student-dashboard.html';
+        });
+    </script>
+</body>
+</html>

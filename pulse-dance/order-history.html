@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Orders | Pulse Dance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== same styles as index ===== */
+        :root {
+            --primary: #7A4B9C;
+            --primary-light: #B58DCD;
+            --primary-pastel: #E8D5F5;
+            --primary-bg: #F8F0FC;
+            --white: #FFFFFF;
+            --gold: #D4AF37;
+            --text-dark: #2D1B3D;
+            --text-muted: #6B5B7A;
+            --shadow: 0 8px 30px rgba(74,44,104,0.12);
+            --radius: 16px;
+            --transition: 0.3s ease;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary-bg); color: var(--text-dark); line-height: 1.6; padding-top: 80px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        .navbar { background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: fixed; width: 100%; top: 0; z-index: 1000; padding: 12px 0; border-bottom: 2px solid var(--primary-pastel); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.6rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .nav-logo i { color: var(--gold); }
+        .nav-logo span { color: var(--text-dark); }
+        .logo-lk { font-size: 0.8rem; color: var(--gold); font-weight: 600; background: var(--primary-pastel); padding: 2px 8px; border-radius: 20px; margin-left: 4px; }
+        .nav-toggle { display: none; background: none; border: none; font-size: 1.6rem; color: var(--primary); cursor: pointer; padding: 4px 8px; }
+        .nav-links { display: flex; align-items: center; gap: 12px; }
+        .nav-links a { padding: 8px 16px; border-radius: 40px; font-weight: 500; font-size: 0.95rem; transition: var(--transition); color: var(--text-dark); cursor: pointer; }
+        .nav-links a:hover, .nav-links a.active { background: var(--primary-pastel); color: var(--primary); }
+
+        .nav-user { display: flex; align-items: center; gap: 16px; margin-left: 8px; }
+        .nav-user .user-greeting { font-size: 0.9rem; font-weight: 500; color: var(--primary); }
+        .cart-btn { position: relative; background: var(--primary-pastel); color: var(--primary); border: none; border-radius: 40px; padding: 8px 16px 8px 12px; font-size: 1rem; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px; font-weight: 500; }
+        .cart-btn:hover { background: var(--primary); color: var(--white); }
+        .cart-btn .cart-count { background: var(--gold); color: var(--text-dark); border-radius: 50%; padding: 0 7px; font-size: 0.7rem; font-weight: 700; min-width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; }
+
+        .btn-nav-login { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: var(--white) !important; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; transition: var(--transition); box-shadow: 0 4px 15px rgba(122,75,156,0.3); }
+        .btn-nav-login:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(122,75,156,0.4); }
+        .btn-nav-register { background: var(--gold); color: var(--text-dark) !important; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; transition: var(--transition); box-shadow: 0 4px 15px rgba(212,175,55,0.3); }
+        .btn-nav-register:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(212,175,55,0.4); background: #e6c84a; }
+        .btn-nav-logout { background: transparent; border: 2px solid #f0d0d0; color: var(--danger) !important; }
+        .btn-nav-logout:hover { background: var(--danger) !important; color: var(--white) !important; border-color: var(--danger); }
+
+        .btn-small { padding: 6px 16px; font-size: 0.85rem; background: var(--primary); color: var(--white); border: none; border-radius: 40px; font-weight: 600; transition: var(--transition); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+        .btn-small:hover { background: var(--primary-light); }
+
+        .page-header { background: var(--white); padding: 2rem 0; border-bottom: 2px solid var(--primary-pastel); margin-bottom: 2rem; }
+        .page-header h1 { font-size: 2.2rem; color: var(--primary); }
+        .page-header p { color: var(--text-muted); }
+
+        .table-wrapper { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        thead { background: var(--primary-pastel); color: var(--primary); }
+        th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #f0e8f5; }
+        th { font-weight: 600; }
+        tr:hover td { background: #faf5fc; }
+
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-paid { background: #d4edda; color: #155724; }
+        .status-approved { background: #cce5ff; color: #004085; }
+
+        #toast { position: fixed; bottom: 30px; right: 30px; background: var(--text-dark); color: var(--white); padding: 14px 28px; border-radius: 50px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 9999; transition: 0.3s ease; transform: translateY(80px); opacity: 0; font-family: 'Inter', sans-serif; }
+        #toast.show { transform: translateY(0); opacity: 1; }
+
+        @media (max-width: 992px) {
+            .nav-toggle { display: block; }
+            .nav-links { position: fixed; top: 70px; left: 0; width: 100%; background: var(--white); flex-direction: column; padding: 2rem 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.08); clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); transition: 0.4s ease; gap: 8px; }
+            .nav-links.open { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAV ===== -->
+    <nav class="navbar" id="mainNav">...</nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-history"></i> My Orders</h1>
+            <p>View your booking history and order status (US-026).</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="table-wrapper">
+            <h3><i class="fas fa-receipt"></i> All Orders</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Items</th>
+                        <th>Type</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // ================================================================
+        // DATA
+        // ================================================================
+        function getOrders() {
+            return JSON.parse(localStorage.getItem('pulseOrders')) || [];
+        }
+        function getClasses() {
+            return JSON.parse(localStorage.getItem('pulseClasses')) || [];
+        }
+
+        // ================================================================
+        // RENDER ORDERS
+        // ================================================================
+        function renderOrders() {
+            const container = document.getElementById('ordersTableBody');
+            const user = sessionStorage.getItem('pulseUser');
+            if (!user) {
+                container.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">Please login to view your orders.</td></tr>`;
+                return;
+            }
+
+            const orders = getOrders().filter(o => o.student === user);
+            if (orders.length === 0) {
+                container.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">No orders yet. <a href="classes.html">Browse classes</a></td></tr>`;
+                return;
+            }
+
+            const classes = getClasses();
+            container.innerHTML = orders.map(o => {
+                const itemsText = o.items.map(i => `${i.name} ×${i.quantity}`).join(', ');
+                const statusClass = o.status === 'pending' ? 'status-pending' : (o.status === 'paid' ? 'status-paid' : 'status-approved');
+                const statusLabel = o.status === 'pending' ? 'Pending' : (o.status === 'paid' ? 'Paid' : 'Approved');
+                const orderType = o.orderType === 'tuition' ? '📚 Tuition' : '🎯 Single';
+                return `
+                    <tr>
+                        <td>#${o.id}</td>
+                        <td>${itemsText}</td>
+                        <td>${orderType}</td>
+                        <td>LKR ${o.total.toLocaleString()}</td>
+                        <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                        <td>${new Date(o.date).toLocaleDateString()}</td>
+                        <td>
+                            ${o.status === 'pending' ? `<button class="btn-small" onclick="cancelOrder(${o.id})">Cancel</button>` : '-'}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ================================================================
+        // CANCEL ORDER (US-030)
+        // ================================================================
+        function cancelOrder(id) {
+            if (confirm('Cancel this order?')) {
+                let orders = getOrders();
+                orders = orders.filter(o => o.id !== id);
+                localStorage.setItem('pulseOrders', JSON.stringify(orders));
+                showToast('🗑️ Order cancelled.');
+                renderOrders();
+            }
+        }
+
+        // ================================================================
+        // TOAST
+        // ================================================================
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        // ================================================================
+        // NAV USER (same as before)
+        // ================================================================
+        function updateNavUser() {
+            const container = document.getElementById('navUserContainer');
+            const loginBtn = document.getElementById('navLoginBtn');
+            const registerBtn = document.getElementById('navRegisterBtn');
+            const user = sessionStorage.getItem('pulseUser');
+            if(user) {
+                const name = user.charAt(0).toUpperCase() + user.slice(1);
+                const cart = JSON.parse(sessionStorage.getItem('pulseCart')) || [];
+                const total = cart.reduce((s,i) => s + (i.quantity||0), 0);
+                container.innerHTML = `
+                    <div class="nav-user">
+                        <span class="user-greeting"><i class="fas fa-user-circle"></i> ${name}</span>
+                        <a href="${user === 'admin' ? 'admin-dashboard.html' : 'student-dashboard.html'}" class="btn-small" style="background:var(--gold);color:var(--text-dark);padding:6px 16px;border-radius:40px;font-weight:600;text-decoration:none;">Dashboard</a>
+                        <a href="order-history.html" class="btn-small" style="background:var(--primary-pastel);color:var(--primary);padding:6px 16px;border-radius:40px;font-weight:600;text-decoration:none;"><i class="fas fa-history"></i> Orders</a>
+                        <button class="cart-btn" id="cartToggleBtn"><i class="fas fa-shopping-cart"></i><span class="cart-count">${total}</span></button>
+                        <a href="#" class="btn-nav-logout" id="logoutBtn">Logout</a>
+                    </div>
+                `;
+                if(loginBtn) loginBtn.style.display = 'none';
+                if(registerBtn) registerBtn.style.display = 'none';
+                document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sessionStorage.removeItem('pulseUser');
+                    sessionStorage.removeItem('pulseCart');
+                    location.reload();
+                });
+                document.getElementById('cartToggleBtn').addEventListener('click', function() { window.location.href = 'cart.html'; });
+            } else {
+                container.innerHTML = '';
+                if(loginBtn) loginBtn.style.display = 'inline-flex';
+                if(registerBtn) registerBtn.style.display = 'inline-flex';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderOrders();
+            updateNavUser();
+
+            const toggle = document.getElementById('navToggle');
+            const links = document.getElementById('navLinks');
+            if(toggle && links) {
+                toggle.addEventListener('click', function(e) { e.stopPropagation(); links.classList.toggle('open'); const i=this.querySelector('i'); if(i) i.classList.toggle('fa-bars') || i.classList.toggle('fa-times'); });
+                document.addEventListener('click', function(e) { if(window.innerWidth<=992) { const nav=document.querySelector('.nav-container'); if(nav && !nav.contains(e.target)) { links.classList.remove('open'); const i=toggle?.querySelector('i'); if(i) { i.classList.remove('fa-times'); i.classList.add('fa-bars'); } } } });
+            }
+        });
+    </script>
+</body>
+</html>
