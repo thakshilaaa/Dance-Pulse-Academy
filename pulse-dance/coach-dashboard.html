@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coach Dashboard | Pulse Dance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #7A4B9C;
+            --primary-light: #B58DCD;
+            --primary-pastel: #E8D5F5;
+            --primary-bg: #F8F0FC;
+            --white: #FFFFFF;
+            --gold: #D4AF37;
+            --text-dark: #2D1B3D;
+            --text-muted: #6B5B7A;
+            --shadow: 0 8px 30px rgba(74,44,104,0.12);
+            --radius: 16px;
+            --transition: 0.3s ease;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary-bg); color: var(--text-dark); line-height: 1.6; padding-top: 80px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        .navbar { background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: fixed; width: 100%; top: 0; z-index: 1000; padding: 12px 0; border-bottom: 2px solid var(--primary-pastel); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.6rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .nav-logo i { color: var(--gold); }
+        .nav-logo span { color: var(--text-dark); }
+        .logo-lk { font-size: 0.8rem; color: var(--gold); font-weight: 600; background: var(--primary-pastel); padding: 2px 8px; border-radius: 20px; margin-left: 4px; }
+        .nav-toggle { display: none; background: none; border: none; font-size: 1.6rem; color: var(--primary); cursor: pointer; padding: 4px 8px; }
+        .nav-links { display: flex; align-items: center; gap: 12px; }
+        .nav-links a { padding: 8px 16px; border-radius: 40px; font-weight: 500; font-size: 0.95rem; transition: var(--transition); color: var(--text-dark); cursor: pointer; }
+        .nav-links a:hover, .nav-links a.active { background: var(--primary-pastel); color: var(--primary); }
+        .btn-nav-logout { background: transparent; border: 2px solid #f0d0d0; color: var(--danger) !important; }
+        .btn-nav-logout:hover { background: var(--danger) !important; color: var(--white) !important; border-color: var(--danger); }
+        .btn-small { padding: 6px 16px; font-size: 0.85rem; background: var(--primary); color: var(--white); border: none; border-radius: 40px; font-weight: 600; transition: var(--transition); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+        .btn-small:hover { background: var(--primary-light); }
+
+        .page-header { background: var(--white); padding: 2rem 0; border-bottom: 2px solid var(--primary-pastel); margin-bottom: 2rem; }
+        .page-header h1 { font-size: 2.2rem; color: var(--primary); }
+        .page-header p { color: var(--text-muted); }
+
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 2rem; }
+        .card h3 { font-size: 1.2rem; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+        .card h3 i { color: var(--gold); }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 4px; font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 2px solid var(--primary-pastel); border-radius: 40px; font-size: 0.95rem; background: var(--primary-bg); transition: var(--transition); }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); background: var(--white); }
+        .form-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 0.5rem; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 50px; font-weight: 600; transition: var(--transition); border: 2px solid transparent; cursor: pointer; font-size: 0.9rem; }
+        .btn-primary { background: var(--primary); color: var(--white); border-color: var(--primary); }
+        .btn-primary:hover { background: var(--primary-light); border-color: var(--primary-light); }
+        .btn-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
+        .btn-outline:hover { background: var(--primary-pastel); }
+
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        thead { background: var(--primary-pastel); color: var(--primary); }
+        th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #f0e8f5; }
+        th { font-weight: 600; }
+        tr:hover td { background: #faf5fc; }
+        .action-btn { padding: 4px 12px; border-radius: 30px; border: none; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: var(--transition); margin-right: 4px; }
+        .action-btn.edit { background: var(--primary-pastel); color: var(--primary); }
+        .action-btn.edit:hover { background: var(--primary); color: white; }
+        .action-btn.delete { background: #fce4ec; color: #c62828; }
+        .action-btn.delete:hover { background: #c62828; color: white; }
+        .slot-badge { display: inline-block; background: var(--primary-pastel); color: var(--primary); padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin: 2px 4px 2px 0; }
+        .slot-delete { background: transparent; border: none; color: var(--danger); cursor: pointer; font-size: 0.7rem; margin-left: 4px; }
+        .slot-delete:hover { color: #c0392b; }
+
+        #toast { position: fixed; bottom: 30px; right: 30px; background: var(--text-dark); color: var(--white); padding: 14px 28px; border-radius: 50px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 9999; transition: 0.3s ease; transform: translateY(80px); opacity: 0; font-family: 'Inter', sans-serif; }
+        #toast.show { transform: translateY(0); opacity: 1; }
+
+        @media (max-width: 992px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .nav-toggle { display: block; }
+            .nav-links { position: fixed; top: 70px; left: 0; width: 100%; background: var(--white); flex-direction: column; padding: 2rem 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.08); clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); transition: 0.4s ease; gap: 8px; }
+            .nav-links.open { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" id="mainNav">
+        <div class="container nav-container">
+            <a href="index.html" class="nav-logo"><i class="fas fa-music"></i><span>Pulse</span> Dance <span class="logo-lk">| LK</span></a>
+            <button class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="coach-dashboard.html" class="active"><i class="fas fa-user-tie"></i> My Dashboard</a></li>
+                <li id="navUserContainer"></li>
+                <li><a href="#" class="btn-nav-logout" id="logoutNavBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-user-tie"></i> Coach Dashboard</h1>
+            <p>Manage your classes and time slots. (Epic 2: US-010 to US-017)</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <!-- LEFT: Add/Edit Class -->
+            <div class="card">
+                <h3><i class="fas fa-plus-circle"></i> <span id="formTitle">Add New Class</span></h3>
+                <form id="classForm">
+                    <input type="hidden" id="editClassId" />
+                    <div class="form-group"><label>Class Name</label><input type="text" id="className" placeholder="e.g. Ballet" required /></div>
+                    <div class="form-group"><label>Level</label>
+                        <select id="classLevel">
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="All Levels">All Levels</option>
+                            <option value="Traditional">Traditional</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Description</label><input type="text" id="classDescription" placeholder="Brief description" /></div>
+                    <div class="form-group"><label>Duration (e.g., 60 min)</label><input type="text" id="classDuration" placeholder="60 min" value="60 min" /></div>
+                    <div class="form-group"><label>Capacity</label><input type="number" id="classCapacity" placeholder="e.g. 10" required /></div>
+                    <div class="form-group"><label>Price (LKR)</label><input type="number" id="classPrice" placeholder="e.g. 2500" required /></div>
+                    <div class="form-group"><label>Image URL</label><input type="text" id="classImage" placeholder="images/class.jpg" value="images/class-default.jpg" /></div>
+                    <div class="form-group"><label>Time Slots (comma separated, e.g., Mon 10:00, Wed 14:00)</label><input type="text" id="classSlots" placeholder="e.g. Mon 10:00, Wed 14:00, Fri 16:00" /></div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submitBtn"><i class="fas fa-save"></i> Save Class</button>
+                        <button type="reset" class="btn btn-outline" id="resetBtn"><i class="fas fa-undo"></i> Clear</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- RIGHT: My Classes -->
+            <div class="card">
+                <h3><i class="fas fa-dumbbell"></i> My Classes</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Name</th><th>Level</th><th>Capacity</th><th>Price</th><th>Time Slots</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="myClassesTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // ================================================================
+        // DATA HELPERS
+        // ================================================================
+        function getClasses() { return JSON.parse(localStorage.getItem('pulseClasses')) || []; }
+        function setClasses(data) { localStorage.setItem('pulseClasses', JSON.stringify(data)); }
+        const currentCoachId = 1; // For demo – all classes belong to coach 1
+
+        // ================================================================
+        // TOAST
+        // ================================================================
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ================================================================
+        // RENDER MY CLASSES
+        // ================================================================
+        function renderMyClasses() {
+            const container = document.getElementById('myClassesTable');
+            if (!container) return;
+            const allClasses = getClasses();
+            const myClasses = allClasses.filter(c => c.coachId === currentCoachId);
+            if (myClasses.length === 0) {
+                container.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No classes yet. Add one using the form.</td></tr>`;
+                return;
+            }
+            container.innerHTML = myClasses.map(c => {
+                const slots = c.timeSlots || [];
+                const slotHtml = slots.map(s => `<span class="slot-badge">${s} <button class="slot-delete" data-classid="${c.id}" data-slot="${s}"><i class="fas fa-times-circle"></i></button></span>`).join(' ');
+                return `
+                    <tr>
+                        <td>${c.name}</td>
+                        <td>${c.level}</td>
+                        <td>${c.capacity}</td>
+                        <td>LKR ${c.price.toLocaleString()}</td>
+                        <td>${slotHtml || 'No slots'}</td>
+                        <td>
+                            <button class="action-btn edit" data-id="${c.id}"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-btn delete" data-id="${c.id}"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Edit
+            document.querySelectorAll('#myClassesTable .action-btn.edit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const cls = getClasses().find(c => c.id === id);
+                    if (cls) fillForm(cls);
+                });
+            });
+            // Delete class
+            document.querySelectorAll('#myClassesTable .action-btn.delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('Delete this class?')) {
+                        const id = parseInt(this.dataset.id);
+                        let classes = getClasses();
+                        classes = classes.filter(c => c.id !== id);
+                        setClasses(classes);
+                        renderMyClasses();
+                        showToast('🗑️ Class deleted (US-013)');
+                    }
+                });
+            });
+            // Delete slot
+            document.querySelectorAll('#myClassesTable .slot-delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const classId = parseInt(this.dataset.classid);
+                    const slot = this.dataset.slot;
+                    if (confirm(`Delete time slot "${slot}"?`)) {
+                        let classes = getClasses();
+                        const cls = classes.find(c => c.id === classId);
+                        if (cls) {
+                            cls.timeSlots = cls.timeSlots.filter(s => s !== slot);
+                            setClasses(classes);
+                            renderMyClasses();
+                            showToast(`🗑️ Slot "${slot}" deleted`);
+                        }
+                    }
+                });
+            });
+        }
+
+        // ================================================================
+        // FORM HANDLING
+        // ================================================================
+        function fillForm(cls) {
+            document.getElementById('editClassId').value = cls.id;
+            document.getElementById('className').value = cls.name;
+            document.getElementById('classLevel').value = cls.level;
+            document.getElementById('classDescription').value = cls.description || '';
+            document.getElementById('classDuration').value = cls.duration || '60 min';
+            document.getElementById('classCapacity').value = cls.capacity;
+            document.getElementById('classPrice').value = cls.price;
+            document.getElementById('classImage').value = cls.image || 'images/class-default.jpg';
+            document.getElementById('classSlots').value = (cls.timeSlots || []).join(', ');
+            document.getElementById('formTitle').textContent = 'Edit Class';
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Update Class';
+        }
+
+        function resetForm() {
+            document.getElementById('classForm').reset();
+            document.getElementById('editClassId').value = '';
+            document.getElementById('formTitle').textContent = 'Add New Class';
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Save Class';
+        }
+        document.getElementById('resetBtn').addEventListener('click', function(e) { e.preventDefault(); resetForm(); });
+
+        document.getElementById('classForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('editClassId').value) || null;
+            const name = document.getElementById('className').value.trim();
+            const level = document.getElementById('classLevel').value;
+            const description = document.getElementById('classDescription').value.trim();
+            const duration = document.getElementById('classDuration').value.trim();
+            const capacity = parseInt(document.getElementById('classCapacity').value);
+            const price = parseInt(document.getElementById('classPrice').value);
+            const image = document.getElementById('classImage').value.trim() || 'images/class-default.jpg';
+            const slots = document.getElementById('classSlots').value.split(',').map(s => s.trim()).filter(s => s);
+
+            if (!name || !capacity || !price) {
+                showToast('❌ Please fill in required fields.');
+                return;
+            }
+
+            let classes = getClasses();
+            if (id) {
+                const idx = classes.findIndex(c => c.id === id);
+                if (idx !== -1) {
+                    classes[idx] = { ...classes[idx], name, level, description, duration, capacity, price, image, timeSlots: slots };
+                    setClasses(classes);
+                    showToast('✅ Class updated (US-012)');
+                }
+            } else {
+                const newId = classes.length ? Math.max(...classes.map(c => c.id)) + 1 : 1;
+                classes.push({
+                    id: newId,
+                    coachId: currentCoachId,
+                    name, level, description, duration, capacity, price, image,
+                    timeSlots: slots,
+                    bookings: 0, revenue: 0
+                });
+                setClasses(classes);
+                showToast('✅ New class added (US-010)');
+            }
+            renderMyClasses();
+            resetForm();
+        });
+
+        // ================================================================
+        // NAV USER / LOGOUT
+        // ================================================================
+        function updateNavUser() {
+            const container = document.getElementById('navUserContainer');
+            const user = sessionStorage.getItem('pulseUser');
+            if (user) {
+                const name = user.charAt(0).toUpperCase() + user.slice(1);
+                container.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:16px;margin-left:8px;">
+                        <span style="font-size:0.9rem;font-weight:500;color:var(--primary);"><i class="fas fa-user-circle"></i> ${name}</span>
+                        <a href="#" class="btn-nav-logout" id="logoutBtn" style="background:transparent;border:2px solid #f0d0d0;color:var(--danger) !important;padding:8px 16px;border-radius:40px;font-weight:500;font-size:0.95rem;transition:var(--transition);cursor:pointer;text-decoration:none;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                `;
+                document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sessionStorage.removeItem('pulseUser');
+                    sessionStorage.removeItem('pulseCart');
+                    window.location.href = 'index.html';
+                });
+            }
+        }
+        document.getElementById('logoutNavBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            sessionStorage.removeItem('pulseUser');
+            sessionStorage.removeItem('pulseCart');
+            window.location.href = 'index.html';
+        });
+
+        // ================================================================
+        // INIT
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Seed default data if empty (same as index)
+            if (!localStorage.getItem('pulseClasses')) {
+                const defaultClasses = [
+                    { id:1, coachId:1, name:'Kandyan Dance', description:'Ves, Udekki, and Pantheru — the classical heritage of Sri Lanka.', level:'Traditional', duration:'60 min', capacity:10, price:2500, image:'images/kandyan-class.jpg', timeSlots:['Mon 10:00', 'Wed 14:00', 'Fri 16:00'] },
+                    { id:2, coachId:2, name:'Contemporary Fusion', description:'Modern movements blended with South Asian storytelling.', level:'Intermediate', duration:'75 min', capacity:12, price:3000, image:'images/contemporary-class.jpg', timeSlots:['Tue 11:00', 'Thu 15:00'] },
+                    { id:3, coachId:3, name:'Hip-Hop & Urban', description:'High-energy choreography with a Sri Lankan urban twist.', level:'All Levels', duration:'60 min', capacity:15, price:2500, image:'images/hiphop-class.jpg', timeSlots:['Mon 16:00', 'Wed 18:00', 'Fri 19:00'] },
+                    { id:4, coachId:1, name:'Bharatanatyam', description:'Classical Indian dance form with expressive storytelling.', level:'Intermediate', duration:'90 min', capacity:10, price:2800, image:'images/bharatanatyam-class.jpg', timeSlots:['Tue 09:00', 'Thu 11:00'] },
+                    { id:5, coachId:2, name:'Ballet', description:'Graceful and technical ballet training for all ages.', level:'Beginner', duration:'60 min', capacity:12, price:2200, image:'images/ballet-class.jpg', timeSlots:['Mon 08:00', 'Wed 10:00'] },
+                    { id:6, coachId:3, name:'Salsa & Latin', description:'Vibrant Latin rhythms and partner dancing.', level:'All Levels', duration:'60 min', capacity:14, price:2600, image:'images/salsa-class.jpg', timeSlots:['Fri 20:00', 'Sat 18:00'] }
+                ];
+                localStorage.setItem('pulseClasses', JSON.stringify(defaultClasses));
+            }
+            if (!localStorage.getItem('pulseCoaches')) {
+                const defaultCoaches = [
+                    { id:1, name:'Anjali Perera', specialty:'Kandyan & Classical', bio:'15+ years of traditional dance performance and teaching.', image:'images/coach-anjali.jpg' },
+                    { id:2, name:'Dilan Wijesinghe', specialty:'Bharatanatyam & Folk', bio:'Choreographer for stage productions across South Asia.', image:'images/coach-dilan.jpg' },
+                    { id:3, name:'Sonali Fernando', specialty:'Urban & Fusion', bio:'Broadway-trained dancer with a love for contemporary fusion.', image:'images/coach-sonali.jpg' },
+                    { id:4, name:'Chamara Rathnayake', specialty:'Contemporary', bio:'Internationally acclaimed contemporary dancer. Focuses on expressive movement.', image:'images/coach-chamara.jpg' },
+                    { id:5, name:'Nadeesha Kumari', specialty:'Ballet', bio:'Trained at the Royal Academy of Dance. Specializes in classical ballet.', image:'images/coach-nadeesha.jpg' },
+                    { id:6, name:'Isuru Bandara', specialty:'Hip-Hop & Urban', bio:'Sri Lanka\'s top urban choreographer. Blends street dance with local rhythms.', image:'images/coach-isuru.jpg' }
+                ];
+                localStorage.setItem('pulseCoaches', JSON.stringify(defaultCoaches));
+            }
+            renderMyClasses();
+            updateNavUser();
+
+            const toggle = document.getElementById('navToggle');
+            const links = document.getElementById('navLinks');
+            if (toggle && links) {
+                toggle.addEventListener('click', function(e) { e.stopPropagation(); links.classList.toggle('open'); const i=this.querySelector('i'); if(i) i.classList.toggle('fa-bars') || i.classList.toggle('fa-times'); });
+                document.addEventListener('click', function(e) { if (window.innerWidth <= 992) { const nav=document.querySelector('.nav-container'); if(nav && !nav.contains(e.target)) { links.classList.remove('open'); const i=toggle?.querySelector('i'); if(i) { i.classList.remove('fa-times'); i.classList.add('fa-bars'); } } } });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coach Profile | Pulse Dance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== FULL STYLES (same as original) ===== */
+        :root {
+            --primary: #7A4B9C;
+            --primary-light: #B58DCD;
+            --primary-pastel: #E8D5F5;
+            --primary-bg: #F8F0FC;
+            --white: #FFFFFF;
+            --gold: #D4AF37;
+            --text-dark: #2D1B3D;
+            --text-muted: #6B5B7A;
+            --shadow: 0 8px 30px rgba(74,44,104,0.12);
+            --radius: 16px;
+            --transition: 0.3s ease;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary-bg); color: var(--text-dark); line-height: 1.6; padding-top: 80px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            padding: 12px 0; border-bottom: 2px solid var(--primary-pastel);
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.6rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .nav-logo i { color: var(--gold); }
+        .nav-logo span { color: var(--text-dark); }
+        .logo-lk { font-size: 0.8rem; color: var(--gold); font-weight: 600; background: var(--primary-pastel); padding: 2px 8px; border-radius: 20px; margin-left: 4px; }
+        .nav-toggle { display: none; background: none; border: none; font-size: 1.6rem; color: var(--primary); cursor: pointer; padding: 4px 8px; }
+        .nav-links { display: flex; align-items: center; gap: 12px; }
+        .nav-links a { padding: 8px 16px; border-radius: 40px; font-weight: 500; font-size: 0.95rem; transition: var(--transition); color: var(--text-dark); cursor: pointer; }
+        .nav-links a:hover, .nav-links a.active { background: var(--primary-pastel); color: var(--primary); }
+        .btn-nav-login { background: linear-gradient(135deg,var(--primary),var(--primary-light)); color: var(--white) !important; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; transition: var(--transition); box-shadow: 0 4px 15px rgba(122,75,156,0.3); }
+        .btn-nav-login:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(122,75,156,0.4); }
+        .btn-nav-register { background: var(--gold); color: var(--text-dark) !important; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; transition: var(--transition); box-shadow: 0 4px 15px rgba(212,175,55,0.3); }
+        .btn-nav-register:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(212,175,55,0.4); background: #e6c84a; }
+        .btn-nav-logout { background: transparent; border: 2px solid #f0d0d0; color: var(--danger) !important; }
+        .btn-nav-logout:hover { background: var(--danger) !important; color: var(--white) !important; border-color: var(--danger); }
+        .btn-small { padding: 6px 16px; font-size: 0.85rem; background: var(--primary); color: var(--white); border: none; border-radius: 40px; font-weight: 600; transition: var(--transition); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+        .btn-small:hover { background: var(--primary-light); }
+
+        .page-header { background: var(--white); padding: 2rem 0; border-bottom: 2px solid var(--primary-pastel); margin-bottom: 2rem; }
+        .page-header h1 { font-size: 2.2rem; color: var(--primary); }
+        .page-header p { color: var(--text-muted); }
+
+        .back-link { display: inline-block; margin-bottom: 1rem; color: var(--primary); font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+        .profile-section { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2rem; margin-bottom: 2rem; display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-start; }
+        .profile-section .avatar-large { width: 150px; height: 150px; border-radius: 50%; background-size: cover; background-position: center; flex-shrink: 0; border: 4px solid var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .profile-section .profile-info { flex: 1; }
+        .profile-section .profile-info h2 { font-size: 2rem; color: var(--primary); }
+        .profile-section .profile-info .specialty { color: var(--gold); font-weight: 600; font-size: 1.1rem; }
+        .profile-section .profile-info p { color: var(--text-muted); margin-top: 0.5rem; }
+
+        .table-wrapper { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; overflow-x: auto; margin-bottom: 2rem; }
+        .table-wrapper h3 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .table-wrapper h3 i { color: var(--gold); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        thead { background: var(--primary-pastel); color: var(--primary); }
+        th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #f0e8f5; }
+        th { font-weight: 600; }
+        tr:hover td { background: #faf5fc; }
+        .time-slot-badge { display: inline-block; background: var(--primary-pastel); color: var(--primary); padding: 4px 14px; border-radius: 40px; font-size: 0.8rem; font-weight: 600; margin: 4px 6px 4px 0; }
+
+        #toast { position: fixed; bottom: 30px; right: 30px; background: var(--text-dark); color: var(--white); padding: 14px 28px; border-radius: 50px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 9999; transition: 0.3s ease; transform: translateY(80px); opacity: 0; font-family: 'Inter', sans-serif; }
+        #toast.show { transform: translateY(0); opacity: 1; }
+
+        @media (max-width: 992px) {
+            .nav-toggle { display: block; }
+            .nav-links { position: fixed; top: 70px; left: 0; width: 100%; background: var(--white); flex-direction: column; padding: 2rem 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.08); clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); transition: 0.4s ease; gap: 8px; }
+            .nav-links.open { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        }
+        @media (max-width: 768px) {
+            .profile-section { flex-direction: column; align-items: center; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAV ===== -->
+    <nav class="navbar" id="mainNav">
+        <div class="container nav-container">
+            <a href="index.html" class="nav-logo"><i class="fas fa-music"></i><span>Pulse</span> Dance <span class="logo-lk">| LK</span></a>
+            <button class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="classes.html"><i class="fas fa-dumbbell"></i> All Classes</a></li>
+                <li><a href="coaches.html"><i class="fas fa-users"></i> Coaches</a></li>
+                <li><a href="#" class="active"><i class="fas fa-user-circle"></i> Profile</a></li>
+                <li id="navUserContainer"></li>
+                <li><a href="login.html" class="btn-nav-login" id="navLoginBtn">Login</a></li>
+                <li><a href="register.html" class="btn-nav-register" id="navRegisterBtn">Register</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-user-circle"></i> <span id="pageTitle">Coach Profile</span></h1>
+            <p id="pageSubtitle">View coach's classes and available time slots – book directly from here.</p>
+        </div>
+    </section>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container" id="mainContent"></div>
+
+    <div id="toast"></div>
+
+    <script>
+        // ================================================================
+        // FORCE RESET DATA – ensures all 10 coaches have classes with slots
+        // ================================================================
+        function resetDefaultData() {
+            const defaultCoaches = [
+                { id: 1, name: 'Anjali Perera', specialty: 'Kandyan & Classical', bio: '15+ years of traditional dance performance and teaching.', image: 'images/coach-anjali.jpg' },
+                { id: 2, name: 'Dilan Wijesinghe', specialty: 'Bharatanatyam & Folk', bio: 'Choreographer for stage productions across South Asia.', image: 'images/coach-dilan.jpg' },
+                { id: 3, name: 'Sonali Fernando', specialty: 'Urban & Fusion', bio: 'Broadway-trained dancer with a love for contemporary fusion.', image: 'images/coach-sonali.jpg' },
+                { id: 4, name: 'Chamara Rathnayake', specialty: 'Contemporary', bio: 'Internationally acclaimed contemporary dancer.', image: 'images/coach-chamara.jpg' },
+                { id: 5, name: 'Nadeesha Kumari', specialty: 'Ballet', bio: 'Trained at the Royal Academy of Dance.', image: 'images/coach-nadeesha.jpg' },
+                { id: 6, name: 'Isuru Bandara', specialty: 'Hip-Hop & Urban', bio: "Sri Lanka's top urban choreographer.", image: 'images/coach-isuru.jpg' },
+                { id: 7, name: 'Miyuru Gunawardena', specialty: 'Modern Jazz', bio: 'Jazz and contemporary choreographer with 10 years of international experience.', image: 'images/coach-miyuru.jpg' },
+                { id: 8, name: 'Tharushi Perera', specialty: 'K-Pop & Street', bio: 'Passionate about K-Pop and street dance, trained in South Korea.', image: 'images/coach-tharushi.jpg' },
+                { id: 9, name: 'Ravindu Silva', specialty: 'Tango & Latin', bio: 'Tango specialist with performances in Buenos Aires and Europe.', image: 'images/coach-ravindu.jpg' },
+                { id: 10, name: 'Lakshmi Raj', specialty: 'Bollywood & Fusion', bio: 'Bollywood dancer and choreographer with over 50 stage shows.', image: 'images/coach-lakshmi.jpg' }
+            ];
+
+            // Each coach (1–10) gets one class. coachId matches class id.
+            const defaultClasses = [
+                { id: 1, coachId: 1, name: 'Kandyan Dance', description: 'Ves, Udekki, and Pantheru — the classical heritage of Sri Lanka.', duration: '60 min', capacity: 10, price: 2500, image: 'images/kandyan-class.jpg', timeSlots: ['Mon 10:00', 'Wed 14:00', 'Fri 16:00'] },
+                { id: 2, coachId: 2, name: 'Contemporary Fusion', description: 'Modern movements blended with South Asian storytelling.', duration: '75 min', capacity: 12, price: 3000, image: 'images/contemporary-class.jpg', timeSlots: ['Tue 11:00', 'Thu 15:00'] },
+                { id: 3, coachId: 3, name: 'Hip-Hop & Urban', description: 'High-energy choreography with a Sri Lankan urban twist.', duration: '60 min', capacity: 15, price: 2500, image: 'images/hiphop-class.jpg', timeSlots: ['Mon 16:00', 'Wed 18:00', 'Fri 19:00'] },
+                { id: 4, coachId: 4, name: 'Bharatanatyam', description: 'Classical Indian dance form with expressive storytelling.', duration: '90 min', capacity: 10, price: 2800, image: 'images/bharatanatyam-class.jpg', timeSlots: ['Tue 09:00', 'Thu 11:00'] },
+                { id: 5, coachId: 5, name: 'Ballet', description: 'Graceful and technical ballet training for all ages.', duration: '60 min', capacity: 12, price: 2200, image: 'images/ballet-class.jpg', timeSlots: ['Mon 08:00', 'Wed 10:00'] },
+                { id: 6, coachId: 6, name: 'Salsa & Latin', description: 'Vibrant Latin rhythms and partner dancing.', duration: '60 min', capacity: 14, price: 2600, image: 'images/salsa-class.jpg', timeSlots: ['Fri 20:00', 'Sat 18:00'] },
+                { id: 7, coachId: 7, name: 'Modern Jazz', description: 'Expressive, energetic jazz dance with contemporary music.', duration: '75 min', capacity: 12, price: 2900, image: 'images/jazz-class.jpg', timeSlots: ['Tue 16:00', 'Thu 18:00'] },
+                { id: 8, coachId: 8, name: 'K-Pop Dance', description: 'Learn the latest K-Pop choreography from popular groups.', duration: '60 min', capacity: 16, price: 2400, image: 'images/kpop-class.jpg', timeSlots: ['Wed 17:00', 'Fri 15:00'] },
+                { id: 9, coachId: 9, name: 'Tango', description: 'Passionate Argentinian tango with live music accompaniment.', duration: '90 min', capacity: 8, price: 3500, image: 'images/tango-class.jpg', timeSlots: ['Thu 19:00', 'Sat 20:00'] },
+                { id: 10, coachId: 10, name: 'Bollywood Fusion', description: 'High-energy Bollywood moves with a modern twist.', duration: '60 min', capacity: 20, price: 2000, image: 'images/bollywood-class.jpg', timeSlots: ['Mon 18:00', 'Wed 20:00'] }
+            ];
+
+            localStorage.setItem('pulseCoaches', JSON.stringify(defaultCoaches));
+            localStorage.setItem('pulseClasses', JSON.stringify(defaultClasses));
+        }
+
+        // ================================================================
+        // GET DATA
+        // ================================================================
+        function getCoaches() {
+            return JSON.parse(localStorage.getItem('pulseCoaches')) || [];
+        }
+
+        function getClasses() {
+            return JSON.parse(localStorage.getItem('pulseClasses')) || [];
+        }
+
+        // ================================================================
+        // CART
+        // ================================================================
+        let cart = JSON.parse(sessionStorage.getItem('pulseCart')) || [];
+        function getCartTotal() { return cart.reduce((s, i) => s + i.quantity, 0); }
+        function saveCart() { sessionStorage.setItem('pulseCart', JSON.stringify(cart)); updateNavUser(); }
+        function addToCart(id) {
+            if (!sessionStorage.getItem('pulseUser')) {
+                showToast('⚠️ Please login first to book.');
+                return;
+            }
+            const ex = cart.find(i => i.classId === id);
+            if (ex) ex.quantity += 1;
+            else cart.push({ classId: id, quantity: 1 });
+            saveCart();
+            showToast('✅ Booked! Added to cart.');
+            renderCoachProfile(currentCoachId);
+        }
+        function removeFromCart(id) {
+            const ex = cart.find(i => i.classId === id);
+            if (ex) { if (ex.quantity > 1) ex.quantity -= 1; else cart = cart.filter(i => i.classId !== id); }
+            saveCart();
+            showToast('🗑️ Removed from cart');
+            renderCoachProfile(currentCoachId);
+        }
+        function isInCart(id) { return cart.some(i => i.classId === id); }
+        function getQty(id) { const i = cart.find(c => c.classId === id); return i ? i.quantity : 0; }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        let currentCoachId = null;
+
+        // ================================================================
+        // RENDER COACH PROFILE
+        // ================================================================
+        function renderCoachProfile(coachId) {
+            currentCoachId = coachId;
+            const coaches = getCoaches();
+            const coach = coaches.find(c => c.id == coachId);
+            const container = document.getElementById('mainContent');
+            const title = document.getElementById('pageTitle');
+            const subtitle = document.getElementById('pageSubtitle');
+
+            if (!coach) {
+                title.textContent = 'Coach Not Found';
+                subtitle.textContent = '';
+                container.innerHTML = `
+                    <p style="color:var(--text-muted);">
+                        Coach not found. 
+                        <a href="coaches.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to all coaches</a>
+                    </p>
+                `;
+                return;
+            }
+
+            title.textContent = coach.name;
+            subtitle.textContent = `View ${coach.name}'s profile and available classes.`;
+
+            const classes = getClasses().filter(c => c.coachId == coachId);
+
+            let classRows = '';
+            if (classes.length > 0) {
+                classRows = classes.map(c => {
+                    const inCart = isInCart(c.id);
+                    const qty = getQty(c.id);
+                    const btn = sessionStorage.getItem('pulseUser') ?
+                        (inCart ? `<button class="btn-small btn-cart-added" data-id="${c.id}"><i class="fas fa-minus"></i> Remove (${qty})</button>` :
+                            `<button class="btn-small btn-cart-add" data-id="${c.id}"><i class="fas fa-cart-plus"></i> Book Now</button>`) :
+                        `<a href="login.html" class="btn-small">Login to Book</a>`;
+                    return `
+                        <tr>
+                            <td>${c.name}</td>
+                            <td>${c.capacity}</td>
+                            <td>LKR ${c.price.toLocaleString()}</td>
+                            <td>
+                                ${c.timeSlots && c.timeSlots.length ? c.timeSlots.map(slot => `<span class="time-slot-badge"><i class="far fa-clock"></i> ${slot}</span>`).join(' ') : 'No slots'}
+                            </td>
+                            <td>${btn}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } else {
+                classRows = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No classes available for this coach.</td></tr>`;
+            }
+
+            container.innerHTML = `
+                <a href="coaches.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to all coaches</a>
+                <div class="profile-section">
+                    <div class="avatar-large" style="background-image: url('${coach.image}');"></div>
+                    <div class="profile-info">
+                        <h2>${coach.name}</h2>
+                        <span class="specialty">${coach.specialty}</span>
+                        <p>${coach.bio}</p>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <h3><i class="fas fa-dumbbell"></i> Classes by ${coach.name}</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Class Name</th><th>Capacity</th><th>Price</th><th>Time Slots</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                            ${classRows}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            document.querySelectorAll('.btn-cart-add').forEach(b => b.addEventListener('click', function () { addToCart(parseInt(this.dataset.id)); }));
+            document.querySelectorAll('.btn-cart-added').forEach(b => b.addEventListener('click', function () { removeFromCart(parseInt(this.dataset.id)); }));
+        }
+
+        // ================================================================
+        // NAV USER
+        // ================================================================
+        function updateNavUser() {
+            const container = document.getElementById('navUserContainer');
+            const loginBtn = document.getElementById('navLoginBtn');
+            const registerBtn = document.getElementById('navRegisterBtn');
+            const user = sessionStorage.getItem('pulseUser');
+            if (user) {
+                const name = user.charAt(0).toUpperCase() + user.slice(1);
+                const total = getCartTotal();
+                const bookingLink = user === 'admin' ? 'admin-dashboard.html' : (user === 'coach' ? 'coach-dashboard.html' : 'student-dashboard.html');
+                container.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:16px;margin-left:8px;">
+                        <span style="font-size:0.9rem;font-weight:500;color:var(--primary);"><i class="fas fa-user-circle"></i> ${name}</span>
+                        <a href="${bookingLink}" class="btn-small" style="background:var(--gold);color:var(--text-dark);padding:6px 16px;border-radius:40px;font-weight:600;text-decoration:none;">Booking</a>
+                        <button class="cart-btn" id="cartToggleBtn"><i class="fas fa-shopping-cart"></i><span class="cart-count">${total}</span></button>
+                        <a href="#" class="btn-nav-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                `;
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (registerBtn) registerBtn.style.display = 'none';
+                document.getElementById('logoutBtn').addEventListener('click', function (e) {
+                    e.preventDefault();
+                    sessionStorage.removeItem('pulseUser');
+                    sessionStorage.removeItem('pulseCart');
+                    cart = [];
+                    location.reload();
+                });
+                document.getElementById('cartToggleBtn').addEventListener('click', function () { window.location.href = 'cart.html'; });
+            } else {
+                container.innerHTML = '';
+                if (loginBtn) loginBtn.style.display = 'inline-flex';
+                if (registerBtn) registerBtn.style.display = 'inline-flex';
+            }
+        }
+
+        // ================================================================
+        // INIT
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', function () {
+            // 🔥 FORCE RESET so all 10 coaches have classes with slots
+            resetDefaultData();
+
+            const params = new URLSearchParams(window.location.search);
+            const coachId = params.get('id');
+            if (coachId) {
+                renderCoachProfile(parseInt(coachId));
+            } else {
+                window.location.href = 'coaches.html';
+            }
+            updateNavUser();
+
+            const toggle = document.getElementById('navToggle');
+            const links = document.getElementById('navLinks');
+            if (toggle && links) {
+                toggle.addEventListener('click', function (e) { e.stopPropagation(); links.classList.toggle('open'); const i = this.querySelector('i'); if (i) i.classList.toggle('fa-bars') || i.classList.toggle('fa-times'); });
+                document.addEventListener('click', function (e) { if (window.innerWidth <= 992) { const nav = document.querySelector('.nav-container'); if (nav && !nav.contains(e.target)) { links.classList.remove('open'); const i = toggle?.querySelector('i'); if (i) { i.classList.remove('fa-times'); i.classList.add('fa-bars'); } } } });
+            }
+        });
+    </script>
+</body>
+</html>

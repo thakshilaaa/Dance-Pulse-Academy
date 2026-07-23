@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Cart | Pulse Dance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        :root { --primary: #7A4B9C; --primary-light: #B58DCD; --primary-pastel: #E8D5F5; --primary-bg: #F8F0FC; --white: #FFFFFF; --gold: #D4AF37; --text-dark: #2D1B3D; --text-muted: #6B5B7A; --shadow: 0 8px 30px rgba(74,44,104,0.12); --radius: 16px; --transition: 0.3s ease; --danger: #e74c3c; --success: #2ecc71; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary-bg); color: var(--text-dark); line-height: 1.6; padding-top: 80px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        .navbar { background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: fixed; width: 100%; top: 0; z-index: 1000; padding: 12px 0; border-bottom: 2px solid var(--primary-pastel); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.6rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .nav-logo i { color: var(--gold); }
+        .nav-logo span { color: var(--text-dark); }
+        .logo-lk { font-size: 0.8rem; color: var(--gold); font-weight: 600; background: var(--primary-pastel); padding: 2px 8px; border-radius: 20px; margin-left: 4px; }
+        .nav-toggle { display: none; background: none; border: none; font-size: 1.6rem; color: var(--primary); cursor: pointer; padding: 4px 8px; }
+        .nav-links { display: flex; align-items: center; gap: 12px; }
+        .nav-links a { padding: 8px 16px; border-radius: 40px; font-weight: 500; font-size: 0.95rem; transition: var(--transition); color: var(--text-dark); cursor: pointer; }
+        .nav-links a:hover, .nav-links a.active { background: var(--primary-pastel); color: var(--primary); }
+        .btn-nav-login { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: var(--white) !important; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; transition: var(--transition); box-shadow: 0 4px 15px rgba(122,75,156,0.3); }
+        .btn-nav-login:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(122,75,156,0.4); background: linear-gradient(135deg, var(--primary-light), var(--primary)); }
+        .btn-nav-register { background: var(--gold); color: var(--text-dark) !important; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; transition: var(--transition); box-shadow: 0 4px 15px rgba(212,175,55,0.3); }
+        .btn-nav-register:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(212,175,55,0.4); background: #e6c84a; }
+        .btn-nav-logout { background: transparent; border: 2px solid #f0d0d0; color: var(--danger) !important; }
+        .btn-nav-logout:hover { background: var(--danger) !important; color: var(--white) !important; border-color: var(--danger); }
+
+        .nav-user { display: flex; align-items: center; gap: 16px; margin-left: 8px; }
+        .nav-user .user-greeting { font-size: 0.9rem; font-weight: 500; color: var(--primary); }
+        .cart-btn { position: relative; background: var(--primary-pastel); color: var(--primary); border: none; border-radius: 40px; padding: 8px 16px 8px 12px; font-size: 1rem; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px; font-weight: 500; }
+        .cart-btn:hover { background: var(--primary); color: var(--white); }
+        .cart-btn .cart-count { background: var(--gold); color: var(--text-dark); border-radius: 50%; padding: 0 7px; font-size: 0.7rem; font-weight: 700; min-width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-small { padding: 6px 16px; font-size: 0.85rem; background: var(--primary); color: var(--white); border: none; border-radius: 40px; font-weight: 600; transition: var(--transition); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-small:hover { background: var(--primary-light); }
+
+        .page-header { background: var(--white); padding: 2rem 0; border-bottom: 2px solid var(--primary-pastel); margin-bottom: 2rem; }
+        .page-header h1 { font-size: 2.2rem; color: var(--primary); }
+        .page-header p { color: var(--text-muted); }
+
+        .cart-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; padding-bottom: 3rem; }
+        .cart-items { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; }
+        .cart-items h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--primary); }
+        .cart-item { display: flex; align-items: center; gap: 1.5rem; padding: 1rem 0; border-bottom: 1px solid #f0e8f5; }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item-img { width: 80px; height: 80px; border-radius: var(--radius); background-size: cover; background-position: center; flex-shrink: 0; }
+        .cart-item-info { flex: 1; }
+        .cart-item-info h4 { font-size: 1.1rem; margin-bottom: 0.2rem; }
+        .cart-item-info .class-meta { font-size: 0.85rem; color: var(--text-muted); }
+        .cart-item-info .class-meta i { color: var(--primary); margin-right: 4px; }
+        .cart-item-info .class-price { font-weight: 700; color: var(--primary); font-size: 1rem; }
+        .cart-item-controls { display: flex; align-items: center; gap: 12px; }
+        .qty-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--primary-pastel); background: transparent; color: var(--primary); font-size: 1rem; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
+        .qty-btn:hover { background: var(--primary-pastel); }
+        .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .qty-display { font-weight: 600; min-width: 24px; text-align: center; }
+        .remove-btn { background: transparent; border: none; color: var(--danger); font-size: 1.2rem; cursor: pointer; transition: var(--transition); padding: 4px 8px; }
+        .remove-btn:hover { transform: scale(1.2); }
+        .out-of-stock-badge { display: inline-block; background: var(--danger); color: white; padding: 2px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; margin-left: 8px; }
+
+        .cart-summary { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; height: fit-content; position: sticky; top: 100px; }
+        .cart-summary h3 { font-size: 1.3rem; color: var(--primary); margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary-pastel); }
+        .summary-row { display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 0.95rem; }
+        .summary-row.total { font-weight: 700; font-size: 1.2rem; border-top: 2px solid var(--primary-pastel); padding-top: 1rem; margin-top: 0.5rem; color: var(--primary); }
+        .checkout-btn { display: block; width: 100%; padding: 14px; background: var(--gold); color: var(--text-dark); border: none; border-radius: 50px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: var(--transition); text-align: center; margin-top: 1.5rem; }
+        .checkout-btn:hover { background: #e6c84a; transform: translateY(-2px); box-shadow: 0 6px 25px rgba(212,175,55,0.4); }
+        .checkout-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        .empty-cart { text-align: center; padding: 3rem 1rem; }
+        .empty-cart i { font-size: 4rem; color: var(--primary-pastel); margin-bottom: 1rem; }
+        .empty-cart h3 { color: var(--text-muted); margin-bottom: 0.5rem; }
+        .empty-cart a { color: var(--primary); font-weight: 600; }
+
+        #toast { position: fixed; bottom: 30px; right: 30px; background: var(--text-dark); color: var(--white); padding: 14px 28px; border-radius: 50px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 9999; transition: 0.3s ease; transform: translateY(80px); opacity: 0; font-family: 'Inter', sans-serif; }
+        #toast.show { transform: translateY(0); opacity: 1; }
+
+        @media (max-width: 992px) {
+            .cart-layout { grid-template-columns: 1fr; }
+            .cart-summary { position: static; }
+            .nav-toggle { display: block; }
+            .nav-links { position: fixed; top: 70px; left: 0; width: 100%; background: var(--white); flex-direction: column; padding: 2rem 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.08); clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); transition: 0.4s ease; gap: 8px; }
+            .nav-links.open { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        }
+        @media (max-width: 600px) {
+            .cart-item { flex-wrap: wrap; gap: 1rem; }
+            .cart-item-img { width: 60px; height: 60px; }
+            .cart-item-controls { width: 100%; justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="mainNav">
+        <div class="container nav-container">
+            <a href="index.html" class="nav-logo"><i class="fas fa-music"></i><span>Pulse</span> Dance <span class="logo-lk">| LK</span></a>
+            <button class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="cart.html" class="active"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                <li id="navUserContainer"></li>
+                <li><a href="login.html" class="btn-nav-login" id="navLoginBtn">Login</a></li>
+                <li><a href="register.html" class="btn-nav-register" id="navRegisterBtn">Register</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-shopping-cart"></i> Your Cart</h1>
+            <p>Review your selections, adjust quantities, and proceed to booking.</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="cart-layout">
+            <div class="cart-items" id="cartItemsContainer"></div>
+            <div class="cart-summary" id="cartSummary">
+                <h3>Order Summary</h3>
+                <div id="summaryContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const classesData = [
+            { id:1, name:'Kandyan Dance', duration:'60 min', capacity:10, price:'LKR 2,500', image:'images/kandyan-class.jpg' },
+            { id:2, name:'Contemporary Fusion', duration:'75 min', capacity:12, price:'LKR 3,000', image:'images/contemporary-class.jpg' },
+            { id:3, name:'Hip-Hop & Urban', duration:'60 min', capacity:15, price:'LKR 2,500', image:'images/hiphop-class.jpg' }
+        ];
+
+        let cart = JSON.parse(sessionStorage.getItem('pulseCart')) || [];
+
+        function getCartTotal() { return cart.reduce((s,i) => s + i.quantity, 0); }
+        function getCartSubtotal() {
+            let total = 0;
+            cart.forEach(item => {
+                const cls = classesData.find(c => c.id === item.classId);
+                if(cls) total += parseInt(cls.price.replace('LKR ','').replace(',','')) * item.quantity;
+            });
+            return total;
+        }
+        function getClassCapacity(id) { const cls = classesData.find(c => c.id === id); return cls ? cls.capacity : 0; }
+        function isClassFull(id) {
+            const booked = cart.filter(i => i.classId === id).reduce((s,i) => s + i.quantity, 0);
+            return booked >= getClassCapacity(id);
+        }
+        function getRemainingSpots(id) {
+            const booked = cart.filter(i => i.classId === id).reduce((s,i) => s + i.quantity, 0);
+            return Math.max(0, getClassCapacity(id) - booked);
+        }
+
+        function saveCart() { sessionStorage.setItem('pulseCart', JSON.stringify(cart)); renderCart(); updateSummary(); updateNavUser(); }
+
+        function updateQuantity(id, delta) {
+            const ex = cart.find(i => i.classId === id);
+            if(!ex) return;
+            const newQty = ex.quantity + delta;
+            if(newQty <= 0) { cart = cart.filter(i => i.classId !== id); saveCart(); showToast('🗑️ Removed from cart (US-021)'); return; }
+            if(newQty > getClassCapacity(id)) { showToast('❌ Cannot exceed class capacity!'); return; }
+            ex.quantity = newQty;
+            saveCart();
+            showToast('🔄 Quantity updated (US-020)');
+        }
+
+        function removeFromCart(id) { cart = cart.filter(i => i.classId !== id); saveCart(); showToast('🗑️ Removed from cart (US-021)'); }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            if(!container) return;
+            if(cart.length === 0) {
+                container.innerHTML = `<div class="empty-cart"><i class="fas fa-shopping-cart"></i><h3>Your cart is empty</h3><p>Browse our <a href="index.html#classes">classes</a> and start booking!</p></div>`;
+                return;
+            }
+            let html = `<h2>Cart Items (${getCartTotal()})</h2>`;
+            cart.forEach(item => {
+                const cls = classesData.find(c => c.id === item.classId);
+                if(!cls) return;
+                const remaining = getRemainingSpots(cls.id);
+                const isFull = remaining === 0;
+                const priceNum = parseInt(cls.price.replace('LKR ','').replace(',',''));
+                const subtotal = priceNum * item.quantity;
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-item-img" style="background-image:url('${cls.image}')"></div>
+                        <div class="cart-item-info">
+                            <h4>${cls.name} ${isFull ? '<span class="out-of-stock-badge">Full</span>' : ''}</h4>
+                            <div class="class-meta"><span><i class="fas fa-clock"></i> ${cls.duration}</span><span><i class="fas fa-users"></i> ${remaining} spots left</span></div>
+                            <div class="class-price">${cls.price} × ${item.quantity} = LKR ${subtotal.toLocaleString()}</div>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="qty-btn" onclick="updateQuantity(${cls.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+                            <span class="qty-display">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQuantity(${cls.id}, 1)" ${isFull ? 'disabled' : ''}>+</button>
+                            <button class="remove-btn" onclick="removeFromCart(${cls.id})"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function updateSummary() {
+            const container = document.getElementById('summaryContent');
+            if(!container) return;
+            const totalItems = getCartTotal();
+            const subtotal = getCartSubtotal();
+            if(cart.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-muted);">No items in cart.</p><a href="index.html#classes" class="btn btn-primary" style="display:block;text-align:center;margin-top:1rem;padding:10px;background:var(--primary);color:white;border-radius:40px;">Browse Classes</a>`;
+                return;
+            }
+            let html = `<div class="summary-row"><span>Items (${totalItems})</span><span>LKR ${subtotal.toLocaleString()}</span></div>`;
+            cart.forEach(item => {
+                const cls = classesData.find(c => c.id === item.classId);
+                if(!cls) return;
+                const priceNum = parseInt(cls.price.replace('LKR ','').replace(',',''));
+                html += `<div class="summary-row" style="font-size:0.85rem;color:var(--text-muted);padding-left:1rem;"><span>${cls.name} × ${item.quantity}</span><span>LKR ${(priceNum * item.quantity).toLocaleString()}</span></div>`;
+            });
+            html += `<div class="summary-row total"><span>Total</span><span>LKR ${subtotal.toLocaleString()}</span></div>`;
+            const hasFull = cart.some(i => isClassFull(i.classId));
+            if(hasFull) html += `<div style="background:#fde8e8;padding:10px;border-radius:8px;margin-top:1rem;color:var(--danger);font-size:0.85rem;"><i class="fas fa-exclamation-circle"></i> Some classes are fully booked. Remove or reduce quantity to proceed.</div>`;
+            html += `<a href="checkout.html" class="checkout-btn" ${hasFull || cart.length === 0 ? 'disabled' : ''}>${hasFull ? '⚠️ Adjust Cart' : 'Proceed to Checkout →'}</a>`;
+            container.innerHTML = html;
+        }
+
+        function updateNavUser() {
+            const container = document.getElementById('navUserContainer');
+            const loginBtn = document.getElementById('navLoginBtn');
+            const registerBtn = document.getElementById('navRegisterBtn');
+            const user = sessionStorage.getItem('pulseUser');
+            if(user) {
+                const name = user.charAt(0).toUpperCase() + user.slice(1);
+                const total = getCartTotal();
+                container.innerHTML = `
+                    <div class="nav-user">
+                        <span class="user-greeting"><i class="fas fa-user-circle"></i> ${name}</span>
+                        <a href="${user === 'admin' ? 'admin-dashboard.html' : 'student-dashboard.html'}" class="btn-small" style="background:var(--gold);color:var(--text-dark);"><i class="fas fa-calendar-check"></i> Booking</a>
+                        <button class="cart-btn" onclick="window.location.href='cart.html'"><i class="fas fa-shopping-cart"></i><span class="cart-count">${total}</span></button>
+                        <a href="#" class="btn-nav-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                `;
+                if(loginBtn) loginBtn.style.display = 'none';
+                if(registerBtn) registerBtn.style.display = 'none';
+                document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sessionStorage.removeItem('pulseUser');
+                    sessionStorage.removeItem('pulseCart');
+                    cart = [];
+                    location.reload();
+                });
+            } else {
+                container.innerHTML = '';
+                if(loginBtn) loginBtn.style.display = 'inline-flex';
+                if(registerBtn) registerBtn.style.display = 'inline-flex';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCart(); updateSummary(); updateNavUser();
+            const toggle = document.getElementById('navToggle');
+            const links = document.getElementById('navLinks');
+            if(toggle && links) {
+                toggle.addEventListener('click', function(e) { e.stopPropagation(); links.classList.toggle('open'); const i=this.querySelector('i'); if(i) i.classList.toggle('fa-bars') || i.classList.toggle('fa-times'); });
+                document.querySelectorAll('.nav-links a').forEach(l => l.addEventListener('click', () => { if(window.innerWidth<=992) { links.classList.remove('open'); const i=toggle?.querySelector('i'); if(i) { i.classList.remove('fa-times'); i.classList.add('fa-bars'); } } }));
+                document.addEventListener('click', function(e) { if(window.innerWidth<=992) { const nav=document.querySelector('.nav-container'); if(nav && !nav.contains(e.target)) { links.classList.remove('open'); const i=toggle?.querySelector('i'); if(i) { i.classList.remove('fa-times'); i.classList.add('fa-bars'); } } } });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout | Pulse Dance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== same styles as index (copy full style block) ===== */
+        :root {
+            --primary: #7A4B9C;
+            --primary-light: #B58DCD;
+            --primary-pastel: #E8D5F5;
+            --primary-bg: #F8F0FC;
+            --white: #FFFFFF;
+            --gold: #D4AF37;
+            --text-dark: #2D1B3D;
+            --text-muted: #6B5B7A;
+            --shadow: 0 8px 30px rgba(74,44,104,0.12);
+            --radius: 16px;
+            --transition: 0.3s ease;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary-bg); color: var(--text-dark); line-height: 1.6; padding-top: 80px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        .navbar { background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: fixed; width: 100%; top: 0; z-index: 1000; padding: 12px 0; border-bottom: 2px solid var(--primary-pastel); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.6rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .nav-logo i { color: var(--gold); }
+        .nav-logo span { color: var(--text-dark); }
+        .logo-lk { font-size: 0.8rem; color: var(--gold); font-weight: 600; background: var(--primary-pastel); padding: 2px 8px; border-radius: 20px; margin-left: 4px; }
+        .nav-toggle { display: none; background: none; border: none; font-size: 1.6rem; color: var(--primary); cursor: pointer; padding: 4px 8px; }
+        .nav-links { display: flex; align-items: center; gap: 12px; }
+        .nav-links a { padding: 8px 16px; border-radius: 40px; font-weight: 500; font-size: 0.95rem; transition: var(--transition); color: var(--text-dark); cursor: pointer; }
+        .nav-links a:hover, .nav-links a.active { background: var(--primary-pastel); color: var(--primary); }
+
+        .nav-user { display: flex; align-items: center; gap: 16px; margin-left: 8px; }
+        .nav-user .user-greeting { font-size: 0.9rem; font-weight: 500; color: var(--primary); }
+        .cart-btn { position: relative; background: var(--primary-pastel); color: var(--primary); border: none; border-radius: 40px; padding: 8px 16px 8px 12px; font-size: 1rem; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px; font-weight: 500; }
+        .cart-btn:hover { background: var(--primary); color: var(--white); }
+        .cart-btn .cart-count { background: var(--gold); color: var(--text-dark); border-radius: 50%; padding: 0 7px; font-size: 0.7rem; font-weight: 700; min-width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; }
+
+        .btn-nav-login { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: var(--white) !important; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; transition: var(--transition); box-shadow: 0 4px 15px rgba(122,75,156,0.3); }
+        .btn-nav-login:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(122,75,156,0.4); }
+        .btn-nav-register { background: var(--gold); color: var(--text-dark) !important; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; transition: var(--transition); box-shadow: 0 4px 15px rgba(212,175,55,0.3); }
+        .btn-nav-register:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(212,175,55,0.4); background: #e6c84a; }
+        .btn-nav-logout { background: transparent; border: 2px solid #f0d0d0; color: var(--danger) !important; }
+        .btn-nav-logout:hover { background: var(--danger) !important; color: var(--white) !important; border-color: var(--danger); }
+
+        .btn-small { padding: 6px 16px; font-size: 0.85rem; background: var(--primary); color: var(--white); border: none; border-radius: 40px; font-weight: 600; transition: var(--transition); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+        .btn-small:hover { background: var(--primary-light); }
+
+        .page-header { background: var(--white); padding: 2rem 0; border-bottom: 2px solid var(--primary-pastel); margin-bottom: 2rem; }
+        .page-header h1 { font-size: 2.2rem; color: var(--primary); }
+        .page-header p { color: var(--text-muted); }
+
+        .checkout-container { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+        .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1.5rem; }
+        .card h3 { font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+        .card h3 i { color: var(--gold); }
+
+        .cart-item { display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid #f0e8f5; }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item .item-info h4 { font-size: 1rem; }
+        .cart-item .item-info p { font-size: 0.8rem; color: var(--text-muted); }
+        .cart-item .item-total { font-weight: 700; color: var(--primary); }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 4px; font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 2px solid var(--primary-pastel); border-radius: 40px; font-size: 0.95rem; background: var(--primary-bg); transition: var(--transition); }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); background: var(--white); }
+
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 50px; font-weight: 600; transition: var(--transition); border: 2px solid transparent; cursor: pointer; font-size: 0.9rem; }
+        .btn-primary { background: var(--primary); color: var(--white); border-color: var(--primary); }
+        .btn-primary:hover { background: var(--primary-light); border-color: var(--primary-light); }
+        .btn-success { background: var(--success); color: var(--white); border-color: var(--success); }
+        .btn-success:hover { background: #27ae60; border-color: #27ae60; }
+        .btn-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
+        .btn-outline:hover { background: var(--primary-pastel); }
+        .btn-danger { background: var(--danger); color: var(--white); border-color: var(--danger); }
+        .btn-danger:hover { background: #c0392b; border-color: #c0392b; }
+
+        .summary-row { display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 0.95rem; }
+        .summary-row.total { font-weight: 700; font-size: 1.2rem; border-top: 2px solid var(--primary-pastel); padding-top: 1rem; margin-top: 0.5rem; }
+
+        #toast { position: fixed; bottom: 30px; right: 30px; background: var(--text-dark); color: var(--white); padding: 14px 28px; border-radius: 50px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 9999; transition: 0.3s ease; transform: translateY(80px); opacity: 0; font-family: 'Inter', sans-serif; }
+        #toast.show { transform: translateY(0); opacity: 1; }
+
+        @media (max-width: 992px) {
+            .checkout-container { grid-template-columns: 1fr; }
+            .nav-toggle { display: block; }
+            .nav-links { position: fixed; top: 70px; left: 0; width: 100%; background: var(--white); flex-direction: column; padding: 2rem 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.08); clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); transition: 0.4s ease; gap: 8px; }
+            .nav-links.open { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAV ===== -->
+    <nav class="navbar" id="mainNav">
+        <div class="container nav-container">
+            <a href="index.html" class="nav-logo"><i class="fas fa-music"></i><span>Pulse</span> Dance <span class="logo-lk">| LK</span></a>
+            <button class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="classes.html"><i class="fas fa-dumbbell"></i> Classes</a></li>
+                <li><a href="coaches.html"><i class="fas fa-users"></i> Coaches</a></li>
+                <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                <li id="navUserContainer"></li>
+                <li><a href="login.html" class="btn-nav-login" id="navLoginBtn">Login</a></li>
+                <li><a href="register.html" class="btn-nav-register" id="navRegisterBtn">Register</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-credit-card"></i> Checkout</h1>
+            <p>Review your order and complete payment (US-024, US-025).</p>
+        </div>
+    </section>
+
+    <!-- ===== CHECKOUT CONTENT ===== -->
+    <div class="container">
+        <div class="checkout-container">
+            <!-- LEFT: Cart items & order details -->
+            <div>
+                <div class="card">
+                    <h3><i class="fas fa-shopping-bag"></i> Order Summary</h3>
+                    <div id="cartItemsList"></div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-pen"></i> Order Type</h3>
+                    <div class="form-group">
+                        <label>Select Booking Type</label>
+                        <select id="orderType">
+                            <option value="single">Single Class</option>
+                            <option value="tuition">Monthly Tuition</option>
+                        </select>
+                    </div>
+                    <div id="tuitionInfo" style="display:none; background:var(--primary-pastel); padding:1rem; border-radius:var(--radius); margin-bottom:1rem;">
+                        <p><i class="fas fa-info-circle"></i> Monthly tuition includes 4 classes per month. Admin approval required after payment (US-029).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Payment & summary -->
+            <div>
+                <div class="card">
+                    <h3><i class="fas fa-receipt"></i> Payment Summary</h3>
+                    <div id="paymentSummary"></div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
+                    <div class="form-group">
+                        <label>Choose Payment</label>
+                        <select id="paymentMethod">
+                            <option value="card">Credit/Debit Card</option>
+                            <option value="bank">Bank Transfer</option>
+                            <option value="cash">Cash (Studio)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" id="placeOrderBtn" style="width:100%;justify-content:center;"><i class="fas fa-check"></i> Place Order</button>
+                    <button class="btn btn-outline" id="cancelOrderBtn" style="width:100%;justify-content:center;margin-top:0.5rem;"><i class="fas fa-times"></i> Cancel &amp; Return to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // ================================================================
+        // DATA HELPERS
+        // ================================================================
+        function getCart() {
+            return JSON.parse(sessionStorage.getItem('pulseCart')) || [];
+        }
+        function clearCart() {
+            sessionStorage.removeItem('pulseCart');
+        }
+        function getClasses() {
+            return JSON.parse(localStorage.getItem('pulseClasses')) || [];
+        }
+        function getOrders() {
+            return JSON.parse(localStorage.getItem('pulseOrders')) || [];
+        }
+        function saveOrders(orders) {
+            localStorage.setItem('pulseOrders', JSON.stringify(orders));
+        }
+
+        // ================================================================
+        // RENDER CART ITEMS
+        // ================================================================
+        function renderCart() {
+            const container = document.getElementById('cartItemsList');
+            const cart = getCart();
+            const classes = getClasses();
+
+            if (cart.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-muted);">Your cart is empty. <a href="classes.html">Browse classes</a></p>`;
+                document.getElementById('placeOrderBtn').disabled = true;
+                document.getElementById('paymentSummary').innerHTML = `<p style="color:var(--text-muted);">No items to pay for.</p>`;
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+            cart.forEach(item => {
+                const cls = classes.find(c => c.id === item.classId);
+                if (!cls) return;
+                const subtotal = cls.price * item.quantity;
+                total += subtotal;
+                html += `
+                    <div class="cart-item">
+                        <div class="item-info">
+                            <h4>${cls.name}</h4>
+                            <p>${cls.duration} | ${item.quantity} × LKR ${cls.price.toLocaleString()}</p>
+                        </div>
+                        <div class="item-total">LKR ${subtotal.toLocaleString()}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Update summary
+            const summary = document.getElementById('paymentSummary');
+            summary.innerHTML = `
+                <div class="summary-row"><span>Subtotal</span><span>LKR ${total.toLocaleString()}</span></div>
+                <div class="summary-row"><span>Tax (0%)</span><span>LKR 0</span></div>
+                <div class="summary-row total"><span>Total</span><span>LKR ${total.toLocaleString()}</span></div>
+            `;
+
+            // Enable order button
+            document.getElementById('placeOrderBtn').disabled = false;
+        }
+
+        // ================================================================
+        // ORDER TYPE TOGGLE
+        // ================================================================
+        document.getElementById('orderType').addEventListener('change', function() {
+            const tuitionInfo = document.getElementById('tuitionInfo');
+            if (this.value === 'tuition') {
+                tuitionInfo.style.display = 'block';
+            } else {
+                tuitionInfo.style.display = 'none';
+            }
+        });
+
+        // ================================================================
+        // PLACE ORDER
+        // ================================================================
+        function placeOrder() {
+            const cart = getCart();
+            if (cart.length === 0) {
+                showToast('❌ Your cart is empty.');
+                return;
+            }
+
+            const user = sessionStorage.getItem('pulseUser');
+            if (!user) {
+                showToast('⚠️ Please login first.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const orderType = document.getElementById('orderType').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+
+            // Calculate total
+            const classes = getClasses();
+            let total = 0;
+            const items = cart.map(item => {
+                const cls = classes.find(c => c.id === item.classId);
+                if (!cls) return null;
+                total += cls.price * item.quantity;
+                return { classId: item.classId, name: cls.name, quantity: item.quantity, price: cls.price };
+            }).filter(Boolean);
+
+            const order = {
+                id: Date.now(),
+                student: user,
+                items: items,
+                orderType: orderType,
+                paymentMethod: paymentMethod,
+                total: total,
+                status: 'pending', // 'pending', 'paid', 'approved'
+                date: new Date().toISOString(),
+                tuitionApproved: false // only for tuition
+            };
+
+            // Save order
+            const orders = getOrders();
+            orders.push(order);
+            saveOrders(orders);
+
+            // Clear cart
+            clearCart();
+
+            showToast('✅ Order placed successfully! (US-024)');
+            setTimeout(() => {
+                window.location.href = 'order-history.html';
+            }, 1500);
+        }
+
+        document.getElementById('placeOrderBtn').addEventListener('click', placeOrder);
+
+        // ================================================================
+        // CANCEL ORDER (redirect to cart)
+        // ================================================================
+        document.getElementById('cancelOrderBtn').addEventListener('click', function() {
+            window.location.href = 'cart.html';
+        });
+
+        // ================================================================
+        // TOAST
+        // ================================================================
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ================================================================
+        // NAV USER
+        // ================================================================
+        function updateNavUser() {
+            const container = document.getElementById('navUserContainer');
+            const loginBtn = document.getElementById('navLoginBtn');
+            const registerBtn = document.getElementById('navRegisterBtn');
+            const user = sessionStorage.getItem('pulseUser');
+            if(user) {
+                const name = user.charAt(0).toUpperCase() + user.slice(1);
+                const cart = getCart();
+                const total = cart.reduce((s,i) => s + (i.quantity||0), 0);
+                container.innerHTML = `
+                    <div class="nav-user">
+                        <span class="user-greeting"><i class="fas fa-user-circle"></i> ${name}</span>
+                        <a href="${user === 'admin' ? 'admin-dashboard.html' : 'student-dashboard.html'}" class="btn-small" style="background:var(--gold);color:var(--text-dark);padding:6px 16px;border-radius:40px;font-weight:600;text-decoration:none;">Dashboard</a>
+                        <a href="order-history.html" class="btn-small" style="background:var(--primary-pastel);color:var(--primary);padding:6px 16px;border-radius:40px;font-weight:600;text-decoration:none;">My Orders</a>
+                        <button class="cart-btn" id="cartToggleBtn"><i class="fas fa-shopping-cart"></i><span class="cart-count">${total}</span></button>
+                        <a href="#" class="btn-nav-logout" id="logoutBtn">Logout</a>
+                    </div>
+                `;
+                if(loginBtn) loginBtn.style.display = 'none';
+                if(registerBtn) registerBtn.style.display = 'none';
+                document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sessionStorage.removeItem('pulseUser');
+                    sessionStorage.removeItem('pulseCart');
+                    location.reload();
+                });
+                document.getElementById('cartToggleBtn').addEventListener('click', function() { window.location.href = 'cart.html'; });
+            } else {
+                container.innerHTML = '';
+                if(loginBtn) loginBtn.style.display = 'inline-flex';
+                if(registerBtn) registerBtn.style.display = 'inline-flex';
+            }
+        }
+
+        // ================================================================
+        // INIT
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Seed data if needed
+            if (!localStorage.getItem('pulseClasses')) {
+                const defaultClasses = [
+                    { id:1, coachId:1, name:'Kandyan Dance', description:'Ves, Udekki, and Pantheru — the classical heritage of Sri Lanka.', duration:'60 min', capacity:10, price:2500, image:'images/kandyan-class.jpg', timeSlots:['Mon 10:00', 'Wed 14:00', 'Fri 16:00'] },
+                    { id:2, coachId:2, name:'Contemporary Fusion', description:'Modern movements blended with South Asian storytelling.', duration:'75 min', capacity:12, price:3000, image:'images/contemporary-class.jpg', timeSlots:['Tue 11:00', 'Thu 15:00'] },
+                    { id:3, coachId:3, name:'Hip-Hop & Urban', description:'High-energy choreography with a Sri Lankan urban twist.', duration:'60 min', capacity:15, price:2500, image:'images/hiphop-class.jpg', timeSlots:['Mon 16:00', 'Wed 18:00', 'Fri 19:00'] },
+                    { id:4, coachId:4, name:'Bharatanatyam', description:'Classical Indian dance form with expressive storytelling.', duration:'90 min', capacity:10, price:2800, image:'images/bharatanatyam-class.jpg', timeSlots:['Tue 09:00', 'Thu 11:00'] },
+                    { id:5, coachId:5, name:'Ballet', description:'Graceful and technical ballet training for all ages.', duration:'60 min', capacity:12, price:2200, image:'images/ballet-class.jpg', timeSlots:['Mon 08:00', 'Wed 10:00'] },
+                    { id:6, coachId:6, name:'Salsa & Latin', description:'Vibrant Latin rhythms and partner dancing.', duration:'60 min', capacity:14, price:2600, image:'images/salsa-class.jpg', timeSlots:['Fri 20:00', 'Sat 18:00'] },
+                    { id:7, coachId:1, name:'Modern Jazz', description:'Expressive, energetic jazz dance with contemporary music.', duration:'75 min', capacity:12, price:2900, image:'images/jazz-class.jpg', timeSlots:['Tue 16:00', 'Thu 18:00'] },
+                    { id:8, coachId:2, name:'K-Pop Dance', description:'Learn the latest K-Pop choreography from popular groups.', duration:'60 min', capacity:16, price:2400, image:'images/kpop-class.jpg', timeSlots:['Wed 17:00', 'Fri 15:00'] },
+                    { id:9, coachId:3, name:'Tango', description:'Passionate Argentinian tango with live music accompaniment.', duration:'90 min', capacity:8, price:3500, image:'images/tango-class.jpg', timeSlots:['Thu 19:00', 'Sat 20:00'] },
+                    { id:10, coachId:4, name:'Bollywood Fusion', description:'High-energy Bollywood moves with a modern twist.', duration:'60 min', capacity:20, price:2000, image:'images/bollywood-class.jpg', timeSlots:['Mon 18:00', 'Wed 20:00'] }
+                ];
+                localStorage.setItem('pulseClasses', JSON.stringify(defaultClasses));
+            }
+            if (!localStorage.getItem('pulseCoaches')) {
+                const defaultCoaches = [
+                    { id:1, name:'Anjali Perera', specialty:'Kandyan & Classical', bio:'15+ years of traditional dance performance and teaching.', image:'images/coach-anjali.jpg' },
+                    { id:2, name:'Dilan Wijesinghe', specialty:'Bharatanatyam & Folk', bio:'Choreographer for stage productions across South Asia.', image:'images/coach-dilan.jpg' },
+                    { id:3, name:'Sonali Fernando', specialty:'Urban & Fusion', bio:'Broadway-trained dancer with a love for contemporary fusion.', image:'images/coach-sonali.jpg' },
+                    { id:4, name:'Chamara Rathnayake', specialty:'Contemporary', bio:'Internationally acclaimed contemporary dancer.', image:'images/coach-chamara.jpg' },
+                    { id:5, name:'Nadeesha Kumari', specialty:'Ballet', bio:'Trained at the Royal Academy of Dance.', image:'images/coach-nadeesha.jpg' },
+                    { id:6, name:'Isuru Bandara', specialty:'Hip-Hop & Urban', bio:'Sri Lanka\'s top urban choreographer.', image:'images/coach-isuru.jpg' },
+                    { id:7, name:'Miyuru Gunawardena', specialty:'Modern Jazz', bio:'Jazz and contemporary choreographer with 10 years of international experience.', image:'images/coach-miyuru.jpg' },
+                    { id:8, name:'Tharushi Perera', specialty:'K-Pop & Street', bio:'Passionate about K-Pop and street dance, trained in South Korea.', image:'images/coach-tharushi.jpg' },
+                    { id:9, name:'Ravindu Silva', specialty:'Tango & Latin', bio:'Tango specialist with performances in Buenos Aires and Europe.', image:'images/coach-ravindu.jpg' },
+                    { id:10, name:'Lakshmi Raj', specialty:'Bollywood & Fusion', bio:'Bollywood dancer and choreographer with over 50 stage shows.', image:'images/coach-lakshmi.jpg' }
+                ];
+                localStorage.setItem('pulseCoaches', JSON.stringify(defaultCoaches));
+            }
+
+            renderCart();
+            updateNavUser();
+
+            // Mobile toggle
+            const toggle = document.getElementById('navToggle');
+            const links = document.getElementById('navLinks');
+            if(toggle && links) {
+                toggle.addEventListener('click', function(e) { e.stopPropagation(); links.classList.toggle('open'); const i=this.querySelector('i'); if(i) i.classList.toggle('fa-bars') || i.classList.toggle('fa-times'); });
+                document.addEventListener('click', function(e) { if(window.innerWidth<=992) { const nav=document.querySelector('.nav-container'); if(nav && !nav.contains(e.target)) { links.classList.remove('open'); const i=toggle?.querySelector('i'); if(i) { i.classList.remove('fa-times'); i.classList.add('fa-bars'); } } } });
+            }
+        });
+    </script>
+</body>
+</html>
